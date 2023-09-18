@@ -63,3 +63,18 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.create-container {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 350px; 
+  height: 350px;
+  border-radius: 50%;
+  transition: box-shadow 0.3s; 
+  box-shadow: 0 0 0 rgba(100, 100, 255, 0);
+}
+
+.create-container:hover {
+  box-shadow: 0 0 50px rgba(100, 100, 255, 0.7); 
+}

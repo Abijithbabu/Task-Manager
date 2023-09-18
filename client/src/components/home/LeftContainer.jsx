@@ -21,9 +21,11 @@ import {
   Image,
   SearchOff,
 } from "@mui/icons-material";
-import { todoTasks } from "../../utils/constants";
+import { useDispatch, useSelector } from 'react-redux'
 
-const LeftContainer = () => {
+const LeftContainer = ({editTask}) => {
+  const todoTasks = useSelector(store => store.data)
+  const dispatch = useDispatch()
   const theme = useTheme();
   const themeColor = theme.palette.primary.main;
   const Search = styled("div")(({ theme }) => ({
@@ -67,8 +69,11 @@ const LeftContainer = () => {
       },
     },
   }));
-
-  return (
+  const handleDelete = (index)=>{
+    const data = todoTasks.filter((item,x)=>index!==x)
+    dispatch({type:'dispatch_data',payload:data})
+  }
+  return ( 
     <>
       <Grid
         container
@@ -105,15 +110,17 @@ const LeftContainer = () => {
                     edge="end"
                     aria-label="delete"
                     sx={{ color: themeColor }}
+                    onClick={()=>editTask({...data,index})}
                   >
-                    <EditNote/>
+                    <EditNote />
                   </IconButton>
                   <IconButton
                     edge="end"
                     aria-label="delete"
                     sx={{ color: themeColor }}
+                    onClick={()=>handleDelete(index)}
                   >
-                    <Delete fontSize="small"/>
+                    <Delete fontSize="small" />
                   </IconButton>
                 </Stack>
               }
@@ -125,9 +132,8 @@ const LeftContainer = () => {
               </ListItemAvatar>
               <ListItemText
                 primary={data.title}
-                secondary={`${data.description.substring(0, 20)} ${
-                  data.description.length > 20 ? `...` : ``
-                }`}
+                secondary={`${data.description.substring(0, 20)} ${data.description.length > 20 ? `...` : ``
+                  }`}
               />
             </ListItem>
           ))}
