@@ -10,22 +10,22 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-
-const settings = ['Profile','Logout'];
+import { useDispatch } from 'react-redux';
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const dispatch = useDispatch()
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseUserMenu = () => {
+    dispatch({ type: 'logout' })
     setAnchorElUser(null);
   };
 
   return (
-    <AppBar position="fixed" sx={{backgroundColor:'#213547'}}>
+    <AppBar position="fixed" sx={{ backgroundColor: '#213547' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ mr: 1 }} />
@@ -69,11 +69,9 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">logout</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

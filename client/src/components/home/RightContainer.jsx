@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Alert, Box, Button, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import image from "../../assets/note-7181089-5807265.png";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -15,16 +15,22 @@ const RightContainer = ({ data, addTask }) => {
   const handleChange = (e) => {
     addTask({ ...data, [e.target.name]: e.target.value });
   };
-  const handleEdit = ()=>{
-    const {index,...taskData} = data
+  const handleEdit = () => {
+    const { index, ...taskData } = data
     const prev = todoTasks
-    if(index){
+    taskData.status = false
+    if (prev[index]) {
       prev[index] = taskData
-    }else{
+    } else {
       prev.push(taskData)
     }
-    dispatch({type:'dispatch_data',payload:prev})
+    dispatch({ type: 'dispatch_data', payload: prev })
     addTask('')
+  }
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    console.log(typeof (file));
+    addTask({ ...data, image: file });
   }
   return (
     <>
@@ -32,10 +38,10 @@ const RightContainer = ({ data, addTask }) => {
         container
         direction={"column"}
         sx={{
-          p: 9,
+          p: '9%',
           height: "100%",
           width: "100%",
-          pt:{xs:'5vh',sm:data ? "5vh" : "20vh"},
+          pt: { xs: '5vh', sm: data ? "5vh" : "20vh" },
         }}
         alignItems={"center"}
       >
@@ -71,7 +77,7 @@ const RightContainer = ({ data, addTask }) => {
                   <FormControlLabel value="Low" default control={<Radio />} label="Low" />
                 </RadioGroup>
               </Grid>
-             
+
 
               <Grid item xs={12}>
                 <TextField
@@ -89,55 +95,58 @@ const RightContainer = ({ data, addTask }) => {
               </Grid>
 
               <Grid item xs={12} sm={12} md={6}>
-                <Box
-                  sx={{
-                    width: 200,
-                    height: 100,
-                    cursor: "pointer",
-                    backgroundColor: "#212121",
-                    "&:hover": {
-                      backgroundColor: "#424242",
-                      opacity: [0.9, 0.8, 0.7],
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                  }}
-                // onClick={handleFileSelect}
-                >
-                  {data?.image ? (
-                    <></>
-                    // <img
-                    //   style={{ width: 240, height: 135, padding: 22 }}
-                    //   src={typeof(data.image) == 'object'? URL.createObjectURL(data.image) : `${process.env.REACT_APP_BaseURL}/${data.image}`} 
-                    // />
-                  ) : (
-                    <React.Fragment>
-                      <AddAPhoto />
-                      <Typography sx={{ mt: 1, fontSize: 13 }}>
-                        Upload Thumbnail
-                      </Typography>
-                    </React.Fragment>
-                  )}
-                  {/* <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-            /> */}
-                </Box>
+                <label htmlFor='input-image'>
+                  <Box
+                    htmlFor='input-image'
+                    sx={{
+                      width: 200,
+                      height: 100,
+                      cursor: "pointer",
+                      backgroundColor: "#212121",
+                      "&:hover": {
+                        backgroundColor: "#424242",
+                        opacity: [0.9, 0.8, 0.7],
+                      },
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexDirection: "column",
+                    }}
+                  >
+                    {data?.image ? (
+                      <img
+                        style={{ width: 200, height: 120, padding: 22 }}
+                        src={typeof (data.image) == 'object' ? URL.createObjectURL(data.image) : `${data.image}`}
+                      // src={typeof(data.image) == 'object'? URL.createObjectURL(data.image) : `${process.env.REACT_APP_BaseURL}/${data.image}`} 
+                      />
+                    ) : (
+                      <React.Fragment>
+                        <AddAPhoto />
+                        <Typography sx={{ mt: 1, fontSize: 13 }}>
+                          Upload Thumbnail
+                        </Typography>
+                      </React.Fragment>
+                    )}
+                    <input
+                      id="input-image"
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={handleFileSelect}
+                    />
+                  </Box>
+                </label>
               </Grid>
               <Grid item xs={12} sm={12} md={6}>
+                {console.log(dayjs(), data.date)}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker']}>
                     <DatePicker
                       defaultValue={dayjs()}
                       name='date'
-                      value={data.date || ''}
+                      value={data.date || dayjs()}
                       onChange={(date) => addTask({ ...data, date })}
-                      disablePast
+                      // disablePast
                       slotProps={{
                         textField: {
                           helperText: 'Last date of submission',
@@ -147,8 +156,8 @@ const RightContainer = ({ data, addTask }) => {
                   </DemoContainer>
                 </LocalizationProvider>
               </Grid>
-              <Grid item xs={12}>
-                <Alert color="primary" severity="info" sx={{ mt: 3, fontSize: 13 }}>
+              <Grid item xs={12} sm={6}>
+                <Alert color="secondary" severity="success" sx={{ mt: 1, fontSize: 13 }}>
                   <ul style={{ margin: "0", padding: "0" }}>
                     <li> Make your thumbnail 1280 by 720 pixels (16:9 ratio)</li>
                     <li>Ensure that your thumbnail is less than 2MB</li>
@@ -156,9 +165,11 @@ const RightContainer = ({ data, addTask }) => {
                   </ul>
                 </Alert>
               </Grid>
+              <Grid item container xs={12} sm={6} alignItems="flex-end" justifyContent="flex-end">
+                <Button onClick={() => addTask('')}>Discard</Button>
+                <Button color='info' onClick={handleEdit}>save</Button>
+              </Grid>
             </Grid>
-            <Button color='info' onClick={() => addTask('')}>Discard</Button>
-            <Button onClick={handleEdit}>save</Button>
           </React.Fragment>
         ) : (
           <div className="create-container" onClick={() => addTask({})}>
