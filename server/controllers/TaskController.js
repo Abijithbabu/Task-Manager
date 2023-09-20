@@ -1,11 +1,30 @@
-const { log } = require('console');
 const fs = require('fs');
 const path = require('path');
+const TASK = require('../model/TaskModel');
 
 const TaskPage = async (req, res, next) => {
     try {
-        const [rows] = await db.execute('SELECT * FROM Alltasks ORDER By date ASC , time ASC');
-        return res.status(200).json({ data: rows})
+        const data = await TASK.find()
+        // const token = jwt.sign({ id: data[0]._id }, process.env.JWT_SECRET, {
+        //     expiresIn: 860000,
+        //   });
+        //   console.log("token send", token);
+        
+        //   res
+        //     .status(200)
+        //     .cookie("token", token, {
+        //       path: "/",
+        //       expires: new Date(Date.now() + 1000 * 60 * 60),
+        //       httpOnly: true,
+        //       SameSite: "None",
+        //       secure: true,
+        //     })
+        //     .json({
+        //       message: "Successfully Logged in",
+        //       data,
+        //       token,
+        //     });
+        return res.status(200).json(data)
     } catch (error) {
         return next(error);
     }
@@ -14,18 +33,19 @@ const TaskPage = async (req, res, next) => {
 
 const AddTask = async (req, res, next) => {
     try {
+        console.log('hi')
         console.log(req.body)
         const filename = req?.file?.filename;
-        if(!filename){
-            res.status(400).json({message:"Invalid image type"})
+        if (!filename) {
+            res.status(400).json({ message: "Invalid image type" })
         }
-        const { headings, descriptions, date, time, priority } = req.body;
-        console.log(headings, descriptions, time, date, priority, filename);
-        const query = 'INSERT INTO Alltasks (headings, descriptions, image, date, time, priority) VALUES (?, ?, ?, ?, ?, ?)';
-        const values = [headings, descriptions, filename, date, time, priority];
-        const [result] = await db.execute(query, values);
-        console.log('Task added to the database:', result);
-        return res.status(201).json({ message: 'Task added successfully' });
+        const query = new TASK({ ...req.body, image: filename })
+        console.log(query);
+        await query.save()
+            .then(() => res.status(201).json({ message: 'Task added successfully', data: query }))
+            .catch(() => res.status(400).json({ message: 'Something went wrong' }))
+        console.log(query);
+        // return res.status(201).json({ message: 'Task added successfully' ,data:query})
     } catch (error) {
         return next(error);
     }
@@ -35,17 +55,17 @@ const AddTask = async (req, res, next) => {
 const deleteTask = async (req, res) => {
     try {
         const id = req.params.id;
-        const query = 'DELETE FROM Alltasks WHERE task_id = ?';
-        const [image] = await db.execute('SELECT image FROM Alltasks WHERE task_id = ?', [id]);
-        const [result] = await db.execute(query, [id]);
-        console.log(result);
-        if (result.affectedRows === 1) {
-            const dir = 'C:/Users/rajes/Desktop/interval/backend/public/uploads'
-            const filePath = path.join(dir, image[0].image);
+        const query = await TASK.findOne({ _id: id })
+        if (query.image) {
+            const dir = 'C:/Users/babpp/Desktop/Task-Manager/server/public/uploads'
+            const filePath = path.join(dir, query.image);
             fs.unlinkSync(filePath);
+        }
+        const data = await TASK.deleteOne({ _id: id })
+        if (data) {
             return res.status(200).json({ message: 'Task deleted successfully' });
         } else {
-            return res.status(404).json({ message: 'Task not found' });
+            return res.status(400).json({ message: 'Something went wrong' });
         }
     } catch (error) {
         console.error('Error deleting task:', error);
@@ -57,13 +77,16 @@ const deleteTask = async (req, res) => {
 const updateTask = async (req, res) => {
     try {
         console.log(req.body)
-        const { headings, descriptions, image, date, time, priority, task_id } = req.body;
-        const filename = req?.file?.filename ?? image
-        const query = `UPDATE Alltasks 
-                       SET headings = ?, descriptions = ?, image = ?, date = ?, time = ?, priority = ?
-                       WHERE task_id = ?`;
-        const [result] = await db.execute(query, [headings, descriptions, filename, date, time, priority, task_id]);
-        if (result.affectedRows === 1) {
+        const { image, _id, ...data } = req.body;
+        const filename = req?.file?.filename
+        if (filename && image) {
+            const dir = 'C:/Users/babpp/Desktop/Task-Manager/server/public/uploads'
+            const filePath = path.join(dir, image);
+            fs.unlinkSync(filePath);
+        }
+        console.log(filename ?? image)
+        const update = await TASK.findByIdAndUpdate({ _id: _id }, { $set: { ...data, image: filename ?? image } }, { upsert: true });
+        if (update) {
             return res.status(200).json({ message: 'Task updated successfully' });
         } else {
             return res.status(404).json({ message: 'Task not found' });

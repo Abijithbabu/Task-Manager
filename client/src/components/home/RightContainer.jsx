@@ -8,6 +8,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { AddAPhoto } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
+import { AddTask, EditTask } from "../../utils/api";
 
 const RightContainer = ({ data, addTask }) => {
   const todoTasks = useSelector(store => store.data)
@@ -15,16 +16,18 @@ const RightContainer = ({ data, addTask }) => {
   const handleChange = (e) => {
     addTask({ ...data, [e.target.name]: e.target.value });
   };
-  const handleEdit = () => {
+  const handleEdit = async() => {
     const { index, ...taskData } = data
     const prev = todoTasks
     taskData.status = false
     if (prev[index]) {
       prev[index] = taskData
+      // dispatch({ type: 'dispatch_data', payload: prev })
+      await EditTask(taskData).then(res=>dispatch({ type: 'dispatch_data', payload:prev}))
+      
     } else {
-      prev.push(taskData)
+      await AddTask(taskData).then(res=>dispatch({ type: 'dispatch_data', payload:[...prev, res.data.data] }))
     }
-    dispatch({ type: 'dispatch_data', payload: prev })
     addTask('')
   }
   const handleFileSelect = (event) => {
@@ -116,7 +119,7 @@ const RightContainer = ({ data, addTask }) => {
                     {data?.image ? (
                       <img
                         style={{ width: 200, height: 120, padding: 22 }}
-                        src={typeof (data.image) == 'object' ? URL.createObjectURL(data.image) : `${data.image}`}
+                        src={typeof (data.image) == 'object' ? URL.createObjectURL(data.image) : `http://localhost:3000/uploads/${data.image}`}
                       // src={typeof(data.image) == 'object'? URL.createObjectURL(data.image) : `${process.env.REACT_APP_BaseURL}/${data.image}`} 
                       />
                     ) : (
@@ -144,7 +147,7 @@ const RightContainer = ({ data, addTask }) => {
                     <DatePicker
                       defaultValue={dayjs()}
                       name='date'
-                      value={data.date || dayjs()}
+                      value={dayjs(data.date) || dayjs()}
                       onChange={(date) => addTask({ ...data, date })}
                       // disablePast
                       slotProps={{

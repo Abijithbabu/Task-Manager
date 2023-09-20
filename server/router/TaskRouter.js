@@ -1,4 +1,5 @@
 const { TaskPage, AddTask, deleteTask, updateTask } = require('../controllers/TaskController');
+const { verifyToken } = require('../middleware/authMiddleware');
 const { uploads } = require('../middleware/multer');
 
 const router = require('express').Router()

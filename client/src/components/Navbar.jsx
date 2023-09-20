@@ -11,6 +11,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useDispatch } from 'react-redux';
+import { getData } from '../utils/api';
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -20,7 +21,6 @@ function ResponsiveAppBar() {
   };
 
   const handleCloseUserMenu = () => {
-    dispatch({ type: 'logout' })
     setAnchorElUser(null);
   };
 
@@ -69,7 +69,17 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={handleCloseUserMenu}>
+              <MenuItem onClick={async() => {
+                const res = await getData()
+                dispatch({ type: 'dispatch_data',payload:res.data })
+                handleCloseUserMenu()
+              }}>
+                <Typography textAlign="center">Login</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => {
+                dispatch({ type: 'logout' })
+                handleCloseUserMenu()
+              }}>
                 <Typography textAlign="center">logout</Typography>
               </MenuItem>
             </Menu>

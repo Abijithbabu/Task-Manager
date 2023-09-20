@@ -24,7 +24,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import CustomStatus from "../CustomStatus";
 
-const LeftContainer = ({editTask}) => {
+const LeftContainer = ({ editTask }) => {
   const todoTasks = useSelector(store => store.data)
   const dispatch = useDispatch()
   const theme = useTheme();
@@ -72,11 +72,11 @@ const LeftContainer = ({editTask}) => {
       },
     },
   }));
-  const handleDelete = (index)=>{
-    const data = todoTasks.filter((item,x)=>index!==x)
-    dispatch({type:'dispatch_data',payload:data})
+  const handleDelete = (index) => {
+    const data = todoTasks.filter((item, x) => index !== x)
+    dispatch({ type: 'dispatch_data', payload: data })
   }
-  return ( 
+  return (
     <>
       <Grid
         container
@@ -109,12 +109,12 @@ const LeftContainer = ({editTask}) => {
               key={index}
               secondaryAction={
                 <Stack direction={"row"} spacing={0.1}>
-                  <CustomStatus status={data.status} date={data.date}/>
+                  <CustomStatus status={data.status} date={data.date} />
                   <IconButton
                     edge="end"
                     aria-label="delete"
                     sx={{ color: themeColor }}
-                    onClick={()=>editTask({...data,index})}
+                    onClick={() => editTask({ ...data, index })}
                   >
                     <EditNote />
                   </IconButton>
@@ -122,7 +122,7 @@ const LeftContainer = ({editTask}) => {
                     edge="end"
                     aria-label="delete"
                     sx={{ color: themeColor }}
-                    onClick={()=>handleDelete(index)}
+                    onClick={() => handleDelete(index)}
                   >
                     <Delete fontSize="small" />
                   </IconButton>
@@ -130,11 +130,11 @@ const LeftContainer = ({editTask}) => {
               }
             >
               <ListItemAvatar>
-              <Avatar src={typeof(data.image) == 'object'? URL.createObjectURL(data.image) : `${data.image}`}  alt={'alt'} />
+                <Avatar src={typeof (data.image) == 'object' ? URL.createObjectURL(data.image) : `http://localhost:3000/uploads/${data.image}`} alt={'alt'} />
               </ListItemAvatar>
               <ListItemText
-                primary={`${data.title.substring(0,sm ? 5 : 10)} ${data.title.length > (sm ? 10 : 20) ? `...` : ``}`}
-                secondary={`${data.description.substring(0,sm ? 10 : 20)} ${data.description.length > (sm ? 10 : 20) ? `...` : ``}`}
+                primary={data.title}
+                secondary={`${data.description.substring(0, sm ? 10 : 20)} ${data.description.length > (sm ? 10 : 20) ? `...` : ``}`}
               />
             </ListItem>
           ))}

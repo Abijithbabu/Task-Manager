@@ -7,7 +7,8 @@ import dayjs from 'dayjs';
 function CustomStatus(props) {
 
   const { status, date = dayjs() } = props;
-  const live = date > dayjs()
+  const live = dayjs(date) > dayjs()
+  console.error(dayjs(date) ,dayjs(),live)
   const text = status ? 'done' : live ? 'live' : 'expired'
   const CardStatus = styled(Typography)({
     textAlign: "right",

@@ -1,9 +1,7 @@
-import { todoTasks } from "../utils/constants";
-
 const initialState = {
   userLogin: { loading: false, error: false, message: "" },
   user: null,
-  data: todoTasks
+  data: []
 }
 
 export function Reducer(state = initialState, { type, payload }) {

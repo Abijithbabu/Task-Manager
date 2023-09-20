@@ -9,7 +9,8 @@ require('dotenv').config();
 app.use(express.json());
 app.use(express.urlencoded())
 app.use(express.static('public'))
-const PORT = process.env.PORT || 3001
+app.use(cookieParser())
+const PORT = process.env.PORT 
 mongoose.connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -19,7 +20,7 @@ mongoose.connect(process.env.MONGODB_URL, {
   
 app.use(cors({
     credentials: true,
-    origin: ['http://localhost:3000'],
+    origin: [process.env.CLIENT_URL],
 }));
 
 app.use(errorMiddleware)
