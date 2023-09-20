@@ -18,17 +18,17 @@ const TaskSchema = mongoose.Schema(
             type: Date,
             default: Date.now,
         },
-        image:{
-            type:String,
+        image: {
+            type: String,
         },
         priority: {
-            type: String,
-            enum: ['High', 'Medium', 'Low'],
-            default: 'Medium'
+            type: Number,
+            enum: [ 3, 2, 1 ],
+            default: 1
         },
-        status:{
-            type:Boolean,
-            default:false
+        status: {
+            type: Boolean,
+            default: false
         }
     }
 );

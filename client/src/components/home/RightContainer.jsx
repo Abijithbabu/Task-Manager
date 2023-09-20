@@ -75,9 +75,9 @@ const RightContainer = ({ data, addTask }) => {
                   value={data.priority || ''}
                   onChange={handleChange}
                 >
-                  <FormControlLabel value="High" control={<Radio />} label="High" />
-                  <FormControlLabel value="Medium" control={<Radio />} label="Medium" />
-                  <FormControlLabel value="Low" default control={<Radio />} label="Low" />
+                  <FormControlLabel value="3" control={<Radio />} label="High" />
+                  <FormControlLabel value="2" control={<Radio />} label="Medium" />
+                  <FormControlLabel value="1" default control={<Radio />} label="Low" />
                 </RadioGroup>
               </Grid>
 

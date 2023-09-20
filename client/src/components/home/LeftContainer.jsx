@@ -23,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from 'react-redux'
 import CustomStatus from "../CustomStatus";
+import { DeleteTask } from "../../utils/api";
 
 const LeftContainer = ({ editTask }) => {
   const todoTasks = useSelector(store => store.data)
@@ -73,6 +74,7 @@ const LeftContainer = ({ editTask }) => {
     },
   }));
   const handleDelete = (index) => {
+    DeleteTask(todoTasks[index]._id)
     const data = todoTasks.filter((item, x) => index !== x)
     dispatch({ type: 'dispatch_data', payload: data })
   }
