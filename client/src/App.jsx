@@ -1,27 +1,12 @@
-import { useState } from "react";
-import Navbar from "./components/Navbar";
-import Layout from './components/home/Layout.jsx' 
-import { ThemeProvider, createTheme } from "@mui/material";
-import Login from './components/Login'
+import { BrowserRouter } from "react-router-dom";
+import Router from "./routes/Router";
+
 function App() {
-  const theme = createTheme({
-    palette: {
-      mode: 'dark', 
-      primary: {
-        main: "#afaeb2",
-      },
-      secondary: {
-        main: "#213547",
-      },
-    }
-  });
   return (
     <>
-    <ThemeProvider theme={theme}>
-      <Login></Login>
-      <Navbar />
-      <Layout/>
-    </ThemeProvider>
+        <BrowserRouter>
+          <Router />
+        </BrowserRouter>
     </>
   );
 }
