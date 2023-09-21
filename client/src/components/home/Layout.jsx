@@ -7,7 +7,7 @@ export default function SpacingGrid() {
   const [data, setData] = React.useState('') 
   return (
     <Grid
-      sx={{ margin: 0, height: "100vh", width: "100%",pt:8 }}
+      sx={{ margin: 0, height: "100vh", width: "100%",pt:8, backgroundColor:'#242424' }}
       container
       direction={"row"}
     >

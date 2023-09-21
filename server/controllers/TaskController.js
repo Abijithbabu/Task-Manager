@@ -55,14 +55,14 @@ const updateTask = async (req, res) => {
         const { image, _id, ...data } = req.body;
         const filename = req?.file?.filename
         if (filename) {
-            const query = await TASK.findOne({ _id: id })
+            const query = await TASK.findOne({ _id })
             if (query.image) {
                 const dir = 'C:/Users/babpp/Desktop/Task-Manager/server/public/uploads'
                 const filePath = path.join(dir, query.image);
                 fs.unlinkSync(filePath);
             }
         }
-        const update = await TASK.findByIdAndUpdate({ _id: _id }, { $set: { ...data, image: filename ?? image } }, { upsert: true });
+        const update = await TASK.findByIdAndUpdate({ _id }, { $set: { ...data, image: filename ?? image } }, { upsert: true });
         if (update) {
             return res.status(200).json({ message: 'Task updated successfully' });
         } else {

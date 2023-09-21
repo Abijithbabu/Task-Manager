@@ -67,7 +67,7 @@ const RightContainer = ({ data, addTask }) => {
                   variant="standard"
                 />
               </Grid>
-              <Grid item xs={12} sm={10} md={12} lg={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <Typography>Priority level</Typography>
                 <RadioGroup
                   row
