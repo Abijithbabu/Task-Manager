@@ -12,10 +12,12 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useDispatch } from 'react-redux';
 import { getData } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -70,9 +72,10 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={async() => {
-                const res = await getData()
-                dispatch({ type: 'dispatch_data',payload:res.data })
-                handleCloseUserMenu()
+                navigate('/login')
+                // const res = await getData()
+                // dispatch({ type: 'dispatch_data',payload:res.data })
+                // handleCloseUserMenu()
               }}>
                 <Typography textAlign="center">Login</Typography>
               </MenuItem>
