@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const TaskSchema = mongoose.Schema(
     {
+        author: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
         title: {
             type: String,
             required: true
@@ -23,7 +27,7 @@ const TaskSchema = mongoose.Schema(
         },
         priority: {
             type: Number,
-            enum: [ 3, 2, 1 ],
+            enum: [3, 2, 1],
             default: 1
         },
         status: {

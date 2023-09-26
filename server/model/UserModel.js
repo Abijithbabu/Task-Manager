@@ -22,7 +22,6 @@ const userSchema = new Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tasks",
-      required: true,
     }
   ]
 });
