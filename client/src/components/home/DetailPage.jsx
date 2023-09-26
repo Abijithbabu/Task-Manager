@@ -70,8 +70,8 @@ export default function MusicPlayerSlider({data,edit,setData}) {
           <CoverImage>
             <img
               alt="no Image"
-              src={typeof (data.image) == 'object' ? URL.createObjectURL(data.image) : `http://localhost:3000/uploads/${data.image}`}
-              />
+              src={typeof (data.image) == 'object' ? URL.createObjectURL(data.image) : `${import.meta.env.VITE_BaseURL}/uploads/${data.image}`}
+            />
           </CoverImage>
           <Box sx={{ ml: 1.5, minWidth: 0 }}>
             <Typography  color="text.secondary" fontWeight={500}>

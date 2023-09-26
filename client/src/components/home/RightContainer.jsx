@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Alert, Box, Button, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import image from "../../assets/note-7181089-5807265.png";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -9,30 +9,33 @@ import dayjs from 'dayjs';
 import { AddAPhoto } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { AddTask, EditTask } from "../../utils/api";
+import DetailPage from './DetailPage'
 
 const RightContainer = ({ data, addTask }) => {
   const todoTasks = useSelector(store => store.data)
+  const user = useSelector(store => store.user)
+  const [edit, setEdit] = useState(false)
   const dispatch = useDispatch()
   const handleChange = (e) => {
     addTask({ ...data, [e.target.name]: e.target.value });
   };
-  const handleEdit = async() => {
+  const handleEdit = async (status = false) => {
     const { index, ...taskData } = data
     const prev = todoTasks
-    taskData.status = false
+    console.log(!!status)
+    taskData.status = !!status
+    taskData.author = user._id
     if (prev[index]) {
       prev[index] = taskData
-      // dispatch({ type: 'dispatch_data', payload: prev })
-      await EditTask(taskData).then(res=>dispatch({ type: 'dispatch_data', payload:prev}))
-      
+      await EditTask(taskData).then(res => dispatch({ type: 'dispatch_data', payload: prev }))
     } else {
-      await AddTask(taskData).then(res=>dispatch({ type: 'dispatch_data', payload:[...prev, res.data.data] }))
+      await AddTask(taskData).then(res => dispatch({ type: 'dispatch_data', payload: [...prev, res.data.data] }))
     }
+    setEdit(false)
     addTask('')
   }
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
-    console.log(typeof (file));
     addTask({ ...data, image: file });
   }
   return (
@@ -48,7 +51,7 @@ const RightContainer = ({ data, addTask }) => {
         }}
         alignItems={"center"}
       >
-        {data ? (
+        {data ? edit ? (
           <React.Fragment>
             <Typography variant="h6" gutterBottom>
               Create Task
@@ -119,8 +122,7 @@ const RightContainer = ({ data, addTask }) => {
                     {data?.image ? (
                       <img
                         style={{ width: 200, height: 120, padding: 22 }}
-                        src={typeof (data.image) == 'object' ? URL.createObjectURL(data.image) : `http://localhost:3000/uploads/${data.image}`}
-                      // src={typeof(data.image) == 'object'? URL.createObjectURL(data.image) : `${process.env.REACT_APP_BaseURL}/${data.image}`} 
+                        src={typeof (data.image) == 'object' ? URL.createObjectURL(data.image) : `${import.meta.env.VITE_BaseURL}/uploads/${data.image}`}
                       />
                     ) : (
                       <React.Fragment>
@@ -141,7 +143,6 @@ const RightContainer = ({ data, addTask }) => {
                 </label>
               </Grid>
               <Grid item xs={12} sm={12} md={6}>
-                {console.log(dayjs(), data.date)}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker']}>
                     <DatePicker
@@ -149,7 +150,7 @@ const RightContainer = ({ data, addTask }) => {
                       name='date'
                       value={dayjs(data.date) || dayjs()}
                       onChange={(date) => addTask({ ...data, date })}
-                      // disablePast
+                      disablePast
                       slotProps={{
                         textField: {
                           helperText: 'Last date of submission',
@@ -169,19 +170,24 @@ const RightContainer = ({ data, addTask }) => {
                 </Alert>
               </Grid>
               <Grid item container xs={12} sm={6} alignItems="flex-end" justifyContent="flex-end">
-                <Button onClick={() => addTask('')}>Discard</Button>
-                <Button color='info' onClick={handleEdit}>save</Button>
+                <Button onClick={() => {
+                  setEdit(false)
+                  addTask('')
+                }}>Discard</Button>
+                <Button color='info' onClick={() => handleEdit(false)}>save</Button>
               </Grid>
             </Grid>
           </React.Fragment>
-        ) : (
-          <div className="create-container" onClick={() => addTask({})}>
-            <img width={300} height={300} src={image} />
-            <Typography variant="h6" gutterBottom >
-              Create a Task
-            </Typography>
-          </div>
-        )}
+        ) :
+          <DetailPage data={data} edit={setEdit} setData={handleEdit} />
+          : (
+            <div className="create-container" onClick={() => addTask({})}>
+              <img width={300} height={300} src={image} />
+              <Typography variant="h6" gutterBottom >
+                Create a Task
+              </Typography>
+            </div>
+          )}
       </Grid>
     </>
   );

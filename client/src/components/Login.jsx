@@ -4,18 +4,20 @@ import * as Yup from "yup";
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBTypography } from 'mdb-react-ui-kit';
 import { useNavigate } from 'react-router-dom'
 import { Button, Link, Stack, TextField, Typography } from '@mui/material';
+import { Register, login } from '../utils/api';
+import { useDispatch } from 'react-redux';
 
 function App() {
   const [loading, setLoading] = useState(false)
   const [auth, setAuth] = useState(true)
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
   const validationSchema = {
     email: Yup.string()
       .email("Must be a valid email")
       .max(255)
       .required("Email is required"),
-    password: Yup.string().max(255).required("Password is required"),
+    password: Yup.string().min(6).max(255).required("Password is required"),
   }
   if (!auth) validationSchema.name = Yup.string().max(255).required("Name is required")
   const formik = useFormik({
@@ -29,12 +31,17 @@ function App() {
     onSubmit: async (values, helpers) => {
       try {
         setLoading(true)
-        // const auth = await Login(values);
-        // auth &&
-        //   dispatch({ type: "user_login", payload: auth }).then(navigate("/"));
+        let res
+        if (auth) {
+          res = await login(values)
+        } else {
+          res = await Register(values)
+        }
+        if (res) dispatch({ type: "login", payload: res.data }).then(navigate("/"));
       } catch (err) {
+        setLoading(false)
         helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
+        helpers.setErrors({ submit: err?.response?.data?.message || err.message });
         helpers.setSubmitting(false);
       }
     },
@@ -116,8 +123,8 @@ function App() {
                 </Button>
               </form>
               <div className="text-center mt-4">
-                {auth ? <p>New here <Link style={{ cursor: 'pointer' }} onClick={() =>!loading && setAuth(false)}>Register</Link></p>
-                  : <p>Already have an account <Link style={{ cursor: 'pointer' }} onClick={() =>!loading && setAuth(true)}>login</Link></p>}
+                {auth ? <p>New here <Link style={{ cursor: 'pointer' }} onClick={() => !loading && setAuth(false)}>Register</Link></p>
+                  : <p>Already have an account <Link style={{ cursor: 'pointer' }} onClick={() => !loading && setAuth(true)}>login</Link></p>}
               </div>
             </MDBCardBody>
           </MDBCard>

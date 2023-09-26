@@ -89,7 +89,7 @@ const LeftContainer = ({ editTask }) => {
         <Typography md={10} sx={{ marginTop: 2, marginBottom: 2 }}>
           List of tasks
         </Typography>
-        <Grid container sx={{ width: "100%", maxWidth: 360 }}>
+        {/* <Grid container sx={{ width: "100%", maxWidth: 360 }}>
           <Grid item lg={10} md={10} sm={10} xs={10}>
             <Search>
               <SearchIconWrapper>
@@ -104,7 +104,7 @@ const LeftContainer = ({ editTask }) => {
           <IconButton>
             <FilterList />
           </IconButton>
-        </Grid>
+        </Grid> */}
         <List sx={{ width: "100%", maxWidth: 360 }}>
           {todoTasks.map((data, index) => (
             <ListItem
