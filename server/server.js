@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 const taskRouter = require('./router/TaskRouter');
+const AuthRouter = require('./router/AuthRouter')
 const cors = require('cors')
 const errorMiddleware = require('./middleware/errorMiddleware');
 require('dotenv').config();
@@ -24,6 +25,7 @@ app.use(cors({
 }));
 
 app.use(errorMiddleware)
+app.use('/auth', AuthRouter)
 app.use('/api', taskRouter)
 
 
