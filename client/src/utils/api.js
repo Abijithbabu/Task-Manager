@@ -7,15 +7,15 @@ export const AddTask = async (data) => {
             formData.append(key, data[key]);
         }
     }
-    const res = await axios.post('/addTask', formData)
+    const res = await axios.post('/api/addTask', formData)
     return res
 }
 
-export const getData = async ()=>{
-    return await axios.get('/viewTask')
+export const getData = async (id)=>{
+    return await axios.get(`/api/viewTask?id=${id}`)
 }
 export const DeleteTask = async (id)=>{
-    return await axios.delete(`/deleteTask/${id}`)
+    return await axios.delete(`/api/deleteTask/${id}`)
 }
 
 export const EditTask = async (data)=>{
@@ -25,5 +25,8 @@ export const EditTask = async (data)=>{
             formData.append(key, data[key]);
         }
     }
-    return await axios.post('/editTask',formData)
+    return await axios.post('/api/editTask',formData)
 }
+
+export const login = async(data)=>await axios.post('/auth/login',data)
+export const Register = async(data)=>await axios.post('/auth/register',data)

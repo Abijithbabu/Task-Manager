@@ -1,5 +1,4 @@
 const initialState = {
-  userLogin: { loading: false, error: false, message: "" },
   user: null,
   data: []
 }
@@ -8,10 +7,8 @@ export function Reducer(state = initialState, { type, payload }) {
   switch (type) {
     case 'login':
       return {
-        ...state,
-        data:{
-          isAuthenticated: true,user:payload.user,token:payload.token
-        } 
+        user:payload.user,
+        data:[]
       };
       case 'dispatch_data':
         return {
@@ -20,7 +17,7 @@ export function Reducer(state = initialState, { type, payload }) {
         };   
     case 'logout':
       return {
-        ...state,
+        user:null,
         data:[] 
       };
     default:
