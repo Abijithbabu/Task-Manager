@@ -18,11 +18,12 @@ mongoose.connect(process.env.MONGODB_URL, {
   }).then(() => {
     console.log("DB Connetion Successfull")
   }).catch((err) => console.log(err))
-  
-app.use(cors({
-    credentials: true,
-    origin: [process.env.CLIENT_URL],
-}));
+
+  app.use(cors())
+// app.use(cors({
+//     credentials: true,
+//     origin: [process.env.CLIENT_URL],
+// }));
 
 app.use(errorMiddleware)
 app.use('/auth', AuthRouter)
